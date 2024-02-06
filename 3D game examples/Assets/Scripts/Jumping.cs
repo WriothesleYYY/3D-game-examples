@@ -11,12 +11,15 @@ public class Jumping : MonoBehaviour
     private float _horizontalInput;
     private float _forwardInput;
     private Rigidbody _playerRigidbody;
+    private Vector3 _startingPosition;
+    private bool OutOfBounds = -10f;
 
     // Start is called before the first frame update
     void Start()
     {
         _playerRigidbody = GetComponent<Rigidbody>();
         Physics.gravity *= GravityModifier;
+        _startingPosition = transform.position;
     }
 
     // Update is called once per frame
@@ -29,6 +32,12 @@ public class Jumping : MonoBehaviour
         {
             _playerRigidbody.AddForce(Vector3.up * JumpForce, ForceMode.Impulse);
             IsOnGround = false;
+
+        }
+
+        if(transform.position < OutOfBounds)
+        {
+            transform.position = _startingPosition;
         }
     }
 
@@ -45,6 +54,18 @@ public class Jumping : MonoBehaviour
         {
             IsOnGround = true;
         }
+    }
+
+
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.CompareTag("checkpoint"))
+        {
+            _startingPosition = other.gameObject.transform.position;
+        }
+
+
     }
 
 }
